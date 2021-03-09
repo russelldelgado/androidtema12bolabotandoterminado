@@ -42,10 +42,7 @@ public class GraficoView extends View implements Runnable {
     public void run() {
 
             while (continuar){
-                tiempo = tiempo+dt;
-                y = y+(int)(velocidad*dt);
-                if (y>ymax)velocidad = -velocidad;
-                if (y<0) velocidad = -velocidad;
+               cambiarPosicion();
                 postInvalidate();
                 try {
                     Thread.sleep(dt);
@@ -56,6 +53,23 @@ public class GraficoView extends View implements Runnable {
             }
     }
 
+    public void cambiarPosicion(){
+        tiempo = tiempo+dt;
+        velocidad = velocidad + aceleracion * dt;
+        float cinetica = velocidad*velocidad/2;
+        y = (int)((cinetica - energia)/aceleracion);
+        if(y>ymax)velocidad = -Math.abs(velocidad);
+        if (y<0) velocidad = Math.abs(velocidad);
+    }
+
+    public  void  cambiarPosicion2(){
+        tiempo = tiempo+dt;
+        velocidad = velocidad * dt;
+        y = y+(int)(velocidad*+aceleracion*dt);
+        if (y>ymax)velocidad = -velocidad;
+        if (y<0) velocidad = -velocidad;
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -64,7 +78,7 @@ public class GraficoView extends View implements Runnable {
         y = 0;
         ymax = h;
 
-        energia = 0.5f * velocidad -aceleracion * y;
+        energia = 0.5f * velocidad * velocidad -aceleracion * y;
 
 
     }
@@ -77,6 +91,7 @@ public class GraficoView extends View implements Runnable {
         canvas.drawCircle(x + 150 ,  y , 30 , paintParticula);
         canvas.drawText("altura  : " +y  ,50 , 150 , paint);
         canvas.drawText("tiempo : " + tiempo, 50 , 190 , paint);
+        canvas.drawText("velocidad : " + velocidad, 50 , 230 , paint);
 
 
     }
